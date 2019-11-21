@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login,authenticate
 from accounts.forms import RegistrationForm
+from django.views.decorators.csrf import csrf_exempt
 #----------------------------------------------Bokeh
 from bokeh.plotting import figure
 from bokeh.embed import components
@@ -32,9 +33,10 @@ def indexView(request):
     return render(request, 'index.html')
 #-------------------bokeh------------------------------
 @login_required
+@csrf_exempt
 def performView(request):
     fieldname ='cgpa'
-    dataBins = 85
+    dataBins = 90
     dataRange=[2.0,4.0]
     search_type1 = 'gte'
     search_type2 = 'lte'
@@ -43,6 +45,7 @@ def performView(request):
     getMatric = request.user.matric
     getProgram = userAcc.objects.filter(matric__exact=getMatric).values_list('program', flat=True)
     getCourse = Courseperformance.objects.filter(matric__exact=getMatric)
+    getCourseButton = Courseperformance.objects.filter(matric__exact=getMatric).values_list('cousecode', flat=True)
     cgpas = userAcc.objects.filter(program=getProgram[0]).values_list(fieldname, flat=True)
     
     marksM = userAcc.objects.filter(matric__exact=getMatric).values_list(fieldname, flat=True)
@@ -78,7 +81,17 @@ def performView(request):
     plot.legend.background_fill_color = "#fefefe"
     plot.toolbar.autohide = True
     plot.grid.grid_line_color="white"
-  
+
+
+
+    for course in getCourseButton:
+        buttonInput= request.POST.get(course,False)
+        if buttonInput != False:
+            response = redirect('/accounts/course/')
+            request.session['nxtPg'] =  buttonInput
+            return response
+    
+   
     #------------------------------------------
     script, div = components(plot)
     return render(request,'performance.html',{'script': script, 'div':div, 'posts': getCourse})
@@ -88,6 +101,7 @@ def performView(request):
 #----------------------------------------------------------------------------
 @login_required
 def subjectView(request):
+    getValue = request.session['nxtPg']
     fieldname ='total'
     dataBins = 50
     search_type1 = 'gte'
@@ -98,8 +112,8 @@ def subjectView(request):
 #---------------------------------------------------------
     getCourse = Courseperformance.objects.filter(matric__exact=getMatric)
 #---------------------------------------------------------
-    marks = Courseperformance.objects.filter(courseid=3).values_list(fieldname, flat=True)
-    userMarks = Courseperformance.objects.filter(matric__exact=getMatric,courseid=3).values_list(fieldname, flat=True)
+    marks = Courseperformance.objects.filter(cousecode=getValue).values_list(fieldname, flat=True)
+    userMarks = Courseperformance.objects.filter(matric__exact=getMatric,cousecode=getValue).values_list(fieldname, flat=True)
     marksM = Courseperformance.objects.filter(**{ filter1: userMarks, filter2 : userMarks }).values_list(fieldname, flat=True)
     arr_hist, edges = np.histogram(marks , 
                                bins = dataBins,
@@ -116,7 +130,7 @@ def subjectView(request):
                   
     #----pure bokeh------------------------------
     plot = figure(plot_height = 600, plot_width = 600, 
-           title = 'Histogram for Test 1 Performance',
+           title = 'Histogram for Test 1 for',
           x_axis_label = 'CGPA', 
            y_axis_label = 'Students', background_fill_color="#fafafa")
 
