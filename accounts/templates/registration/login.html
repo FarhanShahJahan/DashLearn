@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+
+{% block Title %}
+    <title>Log In</title>
+{% endblock Title %}
+{% block content %}
+<div class="container">
+         <h1>Sign In to DashLearn</h1>
+            <form method="POST">
+            <div class="col-8">
+            <hr class="mt-0 mb-4">
+            {% csrf_token %} 
+            {{form.as_p}}
+        <button> Sign In </button>
+        </div>
+        </form>
+        <a href="{% url 'register_url' %}"> Register New Account</a>
+</div>
+{% endblock content %}
+{% block butt %}
+  
+{% endblock butt %}
