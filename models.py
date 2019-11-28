@@ -19,10 +19,24 @@ class AccountsAccount(models.Model):
     is_superuser = models.BooleanField()
     matric = models.CharField(unique=True, max_length=10)
     cgpa = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=-1, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'accounts_account'
+
+
+class Assignment(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    courseid = models.CharField(db_column='courseId', max_length=-1, blank=True, null=True)  # Field name made lowercase.
+    matric = models.CharField(max_length=-1, blank=True, null=True)
+    feedback = models.CharField(max_length=-1, blank=True, null=True)
+    duedate = models.DateField(db_column='dueDate', blank=True, null=True)  # Field name made lowercase.
+    status = models.BooleanField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'assignment'
 
 
 class AuthGroup(models.Model):
@@ -83,6 +97,9 @@ class Courseperformance(models.Model):
     total = models.FloatField(blank=True, null=True)
     status = models.BooleanField(blank=True, null=True)
     cousecode = models.CharField(db_column='couseCode', max_length=-1, blank=True, null=True)  # Field name made lowercase.
+    week7 = models.FloatField(blank=True, null=True)
+    week14 = models.FloatField(blank=True, null=True)
+    amaliquiz = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False

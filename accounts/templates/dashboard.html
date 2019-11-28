@@ -2,12 +2,22 @@
 
 {% block Title %}
 
-
     <title>DashLearn | HomePage</title>
 {% endblock Title %}
 
 {% block content %}
-    <h1>Welcome {{user.matric}}</h1>
+{% if messages %}
+<div class="row">
+<dix class="col-sm-6 col-sm-offset-3">
+{% for message in messages %}
+<p {% if message.tags == "warning" %} class="alert alert-danger"{% endif %}>{{ message }}
+{% endfor %}
+</dix>
+</div>
+{% endif %}
+    <h1>Welcome {{user.name}}</h1>
+
+
   
    <button><a href="{% url 'performance' %}"> Performance</a></button>
    <button><a href="{% url 'profile' %}"> Profile</a></button>
@@ -16,3 +26,8 @@
 
 
 {% endblock content %}
+
+{% block butt %}
+    <button><a href="{% url 'logout' %}"> LogOut</a></button>
+{% endblock butt %}
+    
