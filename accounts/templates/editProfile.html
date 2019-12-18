@@ -5,11 +5,14 @@
 {% endblock Title %}
 
 {% block content %}
-    <h1>Change Password</h1>
-    <form method="post">
+<div class="container">
+    <center><h1>Change Password</h1></center>
+    <form class=form method="post">
             {% csrf_token %} 
             {{ form.as_p}}
         <button type="submit">Submit</button>
     </form>
-
+</div>
 {% endblock content %}
+{% block attend %}
+{% endblock attend %}

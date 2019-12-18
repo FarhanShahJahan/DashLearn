@@ -1,37 +1,162 @@
 {% load static %}
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="{% static 'css/accounts.css' %}">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-{% block Title %}
-<title>Authentication</title>
-{% endblock Title %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-</head>
-<body>
-      {% block content %}
+    <link rel="icon" href="{%  static 'favicon.ico' %}">
+  <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  {% block Title %}
+  <title>Authentication</title>
+  {% endblock Title %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    {% if user.is_authenticated %}
-    <h1>Welcome {{user.username}}</h1>
-        
-    {% else %}
-        <h1>Welcome Home</h1>
-        <a href="{% url 'login_url' %}"> Log In</a>
-        <a href="{% url 'register_url' %}"> Register</a>
-    {% endif %}
+  
+
+</head>
+
+<body>
+
+{% block sidebar %}
+<div class="page-wrapper chiller-theme toggled">
+  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <a disabled href="#">Profile</a>
+
+      </div>
+      <div class="sidebar-header">
+        <div class="user-pic">
+          <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+            alt="User picture">
+        </div>
+        <div class="user-info">
+          <span class="user-name">
+            <strong> {{user.name}}</strong>
+          </span>
+          <span class="user-role">FACULTY: FSKTM</span>
+          <span class="user-role">PROGRAM: BSE</span>
+          <span class="user-role">MATRIC: {{ user.matric }}</span>
+        </div>
+      </div>
+      <!-- sidebar-header  -->
+
+      <!-- sidebar-search  -->
+      <div class="sidebar-menu">
+        <ul>
+              <li class="sidebar-dropdown">
+                <a href="{% url 'dashboard' %}">
+                  <i class="fas fa-home"></i>
+                  <span>Home</span>
+                </a></li>
+                <li class="sidebar-dropdown">
+                <a href="{% url 'assign' %}">
+                    <i class="fas fa-comment-alt"></i>
+                    <span>Assignment Feedback</span>
+                  </a>
+              </li>
+        </ul>
+        <ul>
+          <li class="header-menu">
+            <span>COURSE</span>
+          </li>
+          <form method="POST">
+              {% csrf_token %} 
+       {% for post in postsSB %}
+       <li class="sidebar-dropdown">
+          <a>
+              <i class="fas fa-chart-line"></i>
+            <span>
+            <button class="buttSB" type="submit" value={{post.cousecode}} name={{post.cousecode}}>{{ post.cousecode }}</button>
+          </span>
+          </a>
+        </li>
+       {% endfor %}
+      </form> 
+      
+
+        </ul>
+      </div>
+      <!-- sidebar-menu  -->
+    </div>
+    <!-- sidebar-content  -->
+    <div class="sidebar-footer">
+        <a href="{% url 'edit_profile' %}">
+          <i class="fa fa-cog"></i>
+          <span class="badge"></span>
+        </a>
+        <a href="{% url 'logout' %}">
+          <i class="fa fa-power-off"></i>
+        </a>
+      </div>
+  </nav>
+ {% endblock sidebar %}
+
+<main class="page-content">
+<div class="container-fluid">
+{% block content %}
+<h2>Pro Sidebar</h2>
+<hr>
+<h1>Content</h1>
 {% endblock content %}
+
+
+    <!-- Content Row -->
+
+    <div class="row">
+        {% block chart %}
+
+      {% endblock chart %}
+      <!-- Attendance -->
+    
+      {% block attend %}
+    {% endblock attend %}
+      {% block alert %}
+      {% if messages %}
+<div class="col-xl-5 col-lg-8 ">
+  <div class="card shadow mb-4 ">
+    <div class="card-header py-3" style="background-color: #e2bc5c;">
+      <h6 class="m-0 font-weight-bold" style="color: white;">Announcement</h6>
+    </div>
+    <div class="card-body">
+      {% for message in messages %}
+      <a href="#" {% if message.tags == "error" %}  class="btn btn-danger img-fluid btn-icon-split" {% endif %} {% if message.tags == "warning" %}  class=" img-fluid btn btn-warning btn-icon-split" {% endif %}{% if message.tags == "info" %}  class="img-fluid btn btn-info btn-icon-split" {% endif %} >
+        <span class="icon text-white-50">
+          <i{% if message.tags == "error" %}  class="fas fa-exclamation-triangle" {% endif %}{% if message.tags == "warning" %}  class="fas fa-info-circle" {% endif %}{% if message.tags == "info" %}  class="far fa-calendar-alt"{% endif %}> </i>
+        </span>
+        <span class="text">{{ message }}</span>
+      </a>
+      <div class="my-2"></div>
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
+{% endif %}
+      {% endblock alert %}
+  </div>
+
+</div>
+</main>
+
+    </div>
+
+  </main>
+  <!-- sidebar-wrapper  -->
+  <!-- page-content" -->
+</div>
+
+    
+</body>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-{% block butt %}
-<button><a href="{% url 'logout' %}"> LogOut</a></button>
-<button><a href="{% url 'dashboard' %}"> Home</a></button>
-{% endblock butt %}
-</body>
 {% block postbody %}
 <script></script>
 {% endblock postbody %}

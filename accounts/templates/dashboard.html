@@ -1,33 +1,70 @@
 {% extends "index.html" %}
 
 {% block Title %}
-
-    <title>DashLearn | HomePage</title>
+<link rel="stylesheet" type="text/css" href="http://cdn.pydata.org/bokeh/release/bokeh-1.4.0.min.css"/>
+<link rel="stylesheet" type="text/css" href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-1.4.0.min.css"/>
+<link rel="stylesheet" type="text/css" href="http://cdn.pydata.org/bokeh/release/bokeh-tables-1.4.0.min.css"/>
+<title>DashLearn | HomePage</title>
 {% endblock Title %}
 
+
+
 {% block content %}
-{% if messages %}
-<div class="row">
-<dix class="col-sm-6 col-sm-offset-3">
-{% for message in messages %}
-<p {% if message.tags == "warning" %} class="alert alert-danger"{% endif %}>{{ message }}
-{% endfor %}
-</dix>
-</div>
-{% endif %}
-    <h1>Welcome {{user.name}}</h1>
-
-
-  
-   <button><a href="{% url 'performance' %}"> Performance</a></button>
-   <button><a href="{% url 'profile' %}"> Profile</a></button>
-   <button><a href="{% url 'assign' %}"> Assignment Feedback</a></button>
-
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Welcome To DashLearn</h1>
+        
+      </div>
 
 
 {% endblock content %}
 
+{% block chart %}
+      <!-- Area Chart -->
+      <div class="col-xl-4 col-lg-5" >
+            <div class="card shadow mb-4" >
+              <!-- Card Header - Dropdown -->
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"  style="background-color: #507cdb;">
+                <h6 class="m-0 font-weight-bold"style="color: white;">Courses Overview</h6>
+                <div class="dropdown no-arrow">
+                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  </a>
+                </div>
+              </div>
+              <!-- Card Body -->
+              <div class="card-body" >
+                <div id="myAreaChart" class="img-fluid" >                           
+                      {{div| safe}}
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock chart %}
+
+{% block attend %}
+<div class="col-xl-2 col-lg-5">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3" style="background-color: #686d79;">
+          <h6 class="m-0 font-weight-bold"style="color: white;">Attendance</h6>
+        </div>
+        <div class="card-body">
+        {% for post in postsSB %}
+          <h4 class="small font-weight-bold">{{ post.cousecode }} <span class="float-right">{{ post.attendance }}%</span></h4>
+          <div class="progress mb-4">
+            <div {% if post.attendance >= 80.0 %} class="progress-bar" {% endif %} {% if post.attendance <= 82.0 and post.attendance >= 80.0 %} class="progress-bar bg-warning" {% endif %}{% if post.attendance <= 80.0 %} class="progress-bar bg-danger" {% endif %} role="progressbar" style="width: {{ post.attendance }}%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+</div>
+{% endblock attend %}
 {% block butt %}
-    <button><a href="{% url 'logout' %}"> LogOut</a></button>
+
 {% endblock butt %}
-    
+{% block postbody %}
+<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-1.4.0.min.js"></script>
+<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-1.4.0.min.js"></script>
+<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-tables-1.4.0.min.js"></script>
+<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-api-1.4.0.min.js"></script>
+{{script | safe}}
+{% endblock postbody %}
+

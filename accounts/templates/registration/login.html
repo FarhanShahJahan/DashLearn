@@ -3,20 +3,28 @@
 {% block Title %}
     <title>Log In</title>
 {% endblock Title %}
+
+{% block sidebar %}
+    <p></p>
+{% endblock sidebar %}
+    
 {% block content %}
 <div class="container">
-         <h1>Sign In to DashLearn</h1>
-            <form method="POST">
-            <div class="col-8">
+         <center><h1>Sign In to DashLearn</h1></center>
+        <form class="form" method="POST">
+        <div class="col-8 login-page">
             <hr class="mt-0 mb-4">
             {% csrf_token %} 
             {{form.as_p}}
         <button> Sign In </button>
         </div>
         </form>
-        <a href="{% url 'register_url' %}"> Register New Account</a>
+
 </div>
 {% endblock content %}
+{% block attend %}
+<p></p>
+{% endblock attend %}
 {% block butt %}
   
 {% endblock butt %}

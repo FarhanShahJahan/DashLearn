@@ -96,7 +96,8 @@ class Courseperformance(models.Model):
     cousecode = models.CharField(db_column='couseCode', max_length=10, blank=True, null=True)  # Field name made lowercase.
     week7 = models.FloatField(blank=True, null=True)
     week14 = models.FloatField(blank=True, null=True)
-
+    totalt1t2 = models.FloatField(db_column='totalT1T2', blank=True, null=True)  # Field name made lowercase.
+    totalcarrymark = models.FloatField(db_column='totalCarryMark', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False

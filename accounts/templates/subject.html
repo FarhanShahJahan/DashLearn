@@ -6,14 +6,37 @@
 <link rel="stylesheet" type="text/css" href="http://cdn.pydata.org/bokeh/release/bokeh-tables-1.4.0.min.css"/>
     <title>DashLearn | Course Performance</title>
 {% endblock Title %}
-
+{% block alert %}
+<p></p>
+{% endblock alert %}
 {% block content %}
-    <h1>Performance</h1>
-  
-   {{div| safe}}
-   {{div| safe}}
-
 {% endblock content %}
+{% block chart %}
+      <!-- Area Chart -->
+      <div class="col-xl-10 col-lg-7" >
+        <div class="card shadow mb-4" >
+          <!-- Card Header - Dropdown -->
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"  style="background-color: #507cdb;">
+            {% if subName %}<h6 class="m-0 font-weight-bold"style="color: white;">Performance {{ subName }}</h6>{% endif %}
+            <div class="dropdown no-arrow">
+              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+              </a>
+            </div>
+          </div>
+          <!-- Card Body -->
+          <div class="card-body" >
+            <div id="myAreaChart" class="img-fluid" >                           
+                  {{div| safe}}
+                 
+            </div>
+          </div>
+        </div>
+      </div>
+      
+{% endblock chart %}
+{% block attend %}
+{% endblock attend %}
 {% block postbody %}
 <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-1.4.0.min.js"></script>
 <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-1.4.0.min.js"></script>

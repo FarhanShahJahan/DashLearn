@@ -23,8 +23,8 @@
             <td>Course Taken :</td>
             <td>
                 {% for post in posts %}
-     {{ post.cousecode }}
-    {% endfor %}
+                {{ post.cousecode }}
+                 {% endfor %}
             </td>
         </tr>
     </table>
@@ -33,3 +33,5 @@
     
     <button><a href="{% url 'edit_profile' %}"> Edit Password</a></button>
 {% endblock content %}
+{% block attend %}
+{% endblock attend %}
