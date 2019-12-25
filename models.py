@@ -20,6 +20,7 @@ class AccountsAccount(models.Model):
     matric = models.CharField(unique=True, max_length=10)
     cgpa = models.FloatField(blank=True, null=True)
     name = models.CharField(max_length=-1, blank=True, null=True)
+    cgpapercent = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -101,6 +102,7 @@ class Courseperformance(models.Model):
     week14 = models.FloatField(blank=True, null=True)
     totalt1t2 = models.FloatField(db_column='totalT1T2', blank=True, null=True)  # Field name made lowercase.
     totalcarrymark = models.FloatField(db_column='totalCarryMark', blank=True, null=True)  # Field name made lowercase.
+    predictedmarks = models.FloatField(db_column='predictedMarks', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False

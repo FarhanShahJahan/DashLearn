@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="{%  static 'favicon.ico' %}">
+  <link rel="icon" href='logos.jpg'>
   <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,6 +12,7 @@
   {% block Title %}
   <title>Authentication</title>
   {% endblock Title %}
+  <link rel="icon" href="logos.jpg">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
   
@@ -28,7 +29,7 @@
   <nav id="sidebar" class="sidebar-wrapper">
     <div class="sidebar-content">
       <div class="sidebar-brand">
-        <a disabled href="#">Profile</a>
+        <a href="{% url 'dashboard' %}">DashLearn</a>
 
       </div>
       <div class="sidebar-header">
@@ -110,37 +111,22 @@
     <!-- Content Row -->
 
     <div class="row">
-        {% block chart %}
-
-      {% endblock chart %}
+        {% block cgpa %}
+        {% endblock cgpa %}
       <!-- Attendance -->
-    
-      {% block attend %}
+          {% block attend %}
     {% endblock attend %}
       {% block alert %}
-      {% if messages %}
-<div class="col-xl-5 col-lg-8 ">
-  <div class="card shadow mb-4 ">
-    <div class="card-header py-3" style="background-color: #e2bc5c;">
-      <h6 class="m-0 font-weight-bold" style="color: white;">Announcement</h6>
-    </div>
-    <div class="card-body">
-      {% for message in messages %}
-      <a href="#" {% if message.tags == "error" %}  class="btn btn-danger img-fluid btn-icon-split" {% endif %} {% if message.tags == "warning" %}  class=" img-fluid btn btn-warning btn-icon-split" {% endif %}{% if message.tags == "info" %}  class="img-fluid btn btn-info btn-icon-split" {% endif %} >
-        <span class="icon text-white-50">
-          <i{% if message.tags == "error" %}  class="fas fa-exclamation-triangle" {% endif %}{% if message.tags == "warning" %}  class="fas fa-info-circle" {% endif %}{% if message.tags == "info" %}  class="far fa-calendar-alt"{% endif %}> </i>
-        </span>
-        <span class="text">{{ message }}</span>
-      </a>
-      <div class="my-2"></div>
-      {% endfor %}
-
-    </div>
-  </div>
-</div>
-{% endif %}
       {% endblock alert %}
+   
+        
+
+
+
   </div>
+  {% block chart %}
+  {% endblock chart %}
+
 
 </div>
 </main>

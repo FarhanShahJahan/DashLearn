@@ -23,7 +23,7 @@
       <div class="col-xl-4 col-lg-5" >
             <div class="card shadow mb-4" >
               <!-- Card Header - Dropdown -->
-              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"  style="background-color: #507cdb;">
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"  style="background-color: #686d79;">
                 <h6 class="m-0 font-weight-bold"style="color: white;">Courses Overview</h6>
                 <div class="dropdown no-arrow">
                   <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -50,13 +50,67 @@
         {% for post in postsSB %}
           <h4 class="small font-weight-bold">{{ post.cousecode }} <span class="float-right">{{ post.attendance }}%</span></h4>
           <div class="progress mb-4">
-            <div {% if post.attendance >= 80.0 %} class="progress-bar" {% endif %} {% if post.attendance <= 82.0 and post.attendance >= 80.0 %} class="progress-bar bg-warning" {% endif %}{% if post.attendance <= 80.0 %} class="progress-bar bg-danger" {% endif %} role="progressbar" style="width: {{ post.attendance }}%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+            <div {% if post.attendance >= 82.0 %} class="progress-bar" {% endif %} {% if post.attendance <= 82.0 and post.attendance >= 80.0 %} class="progress-bar bg-warning" {% endif %}{% if post.attendance <= 80.0 %} class="progress-bar bg-danger" {% endif %} role="progressbar" style="width: {{ post.attendance }}%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           {% endfor %}
         </div>
       </div>
 </div>
 {% endblock attend %}
+{% block alert %}
+<div class="col-xl-5 col-lg-8 ">
+<div class="card shadow mb-4 ">
+<div class="card-header py-3" style="background-color: #686d79;">
+<h6 class="m-0 font-weight-bold" style="color: white;">Announcement</h6>
+</div>
+<div class="card-body">
+{% for message in messages %}
+<a href="#" {% if message.tags == "error" %}  class="btn btn-danger img-fluid btn-icon-split" {% endif %} {% if message.tags == "warning" %}  class=" img-fluid btn btn-warning btn-icon-split" {% endif %}{% if message.tags == "info" %}  class="img-fluid btn btn-info btn-icon-split" {% endif %} >
+  <span class="icon text-white-50">
+    <i{% if message.tags == "error" %}  class="fas fa-exclamation-triangle" {% endif %}{% if message.tags == "warning" %}  class="fas fa-info-circle" {% endif %}{% if message.tags == "info" %}  class="far fa-calendar-alt"{% endif %}> </i>
+  </span>
+  <span class="text">{{ message }}</span>
+</a>
+<div class="my-2"></div>
+{% endfor %}
+</div>
+</div>
+</div>
+
+{% endblock alert %}
+{% block cgpa %}
+<div class="col-xl-2 col-lg-5 ">
+    <div class="card shadow mb-4 ">
+    <div class="card-header py-3" style="background-color: #686d79;">
+    <h6 class="m-0 font-weight-bold" style="color: white;">CGPA</h6>
+    </div>
+    <div class="card-body ">
+        <div {% if user.cgpapercent > 50 %} class=" progress-circle over50 p{{user.cgpapercent}}" {%endif %}{% if user.cgpapercent < 50 %} class="progress-circle  p{{user.cgpapercent}}" {%endif %}  >
+          <span class="img-fluid">{{user.cgpa}}</span>
+          <div class="left-half-clipper ">
+              {% if user.cgpa > 3.74 %}
+              <div class="first50-bar" style=" background-color:#99cc33;"></div>
+              <div class="value-bar" style="background-color:#99cc33;"></div>
+              {% endif %}
+              {% if user.cgpa > 3.0 and user.cgpa <= 3.74 %}
+              <div class="first50-bar" style=" background-color: rgb(4, 93, 165);"></div>
+              <div class="value-bar" style="background-color: rgb(4, 93, 165);"></div>
+              {% endif %}
+              {% if user.cgpa > 2.5 and user.cgpa <= 3.0 %}
+              <div class="first50-bar" style=" background-color: #ffcc00;"></div>
+              <div class="value-bar" style="background-color: #ffcc00;"></div>
+              {% endif %}
+              {% if user.cgpa <= 2.5 %}
+              <div class="first50-bar" style=" background-color: #ffcc00;"></div>
+              <div class="value-bar" style="background-color: #ffcc00;"></div>
+              {% endif %}
+          </div>
+        
+        </div>
+    </div>
+    </div>
+    </div>
+{% endblock cgpa %}
 {% block butt %}
 
 {% endblock butt %}

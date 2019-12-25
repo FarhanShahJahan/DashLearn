@@ -18,82 +18,9 @@ from bokeh.layouts import column, row
 from bokeh.models import ColumnDataSource
 # Create your views here.
 context ={}
-def registerView(request):
-    if request.method =="POST":
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login_url')
-        else:
-            context['registration_form'] = form
-    else:
-        form = RegistrationForm()
-        context['registration_form'] = form
-    return render(request, 'registration/register.html', context)
 
 def indexView(request):
     return render(request, 'index.html')
-
-@login_required
-@csrf_exempt
-def performView(request):
-    fieldname ='cgpa'
-    search_type1 = 'gte'
-    search_type2 = 'lte'
-    filter1 = fieldname + '__' + search_type1
-    filter2 = fieldname + '__' + search_type2
-    getMatric = request.user.matric
-    getWeek7 = [str(elem) for elem in list(Courseperformance.objects.filter(matric__exact=getMatric).values_list('week7', flat=True))]
-    getWeek14 = [str(g7) for g7 in list(Courseperformance.objects.filter(matric__exact=getMatric).values_list('week14', flat=True))]
-    getAmali = [str(gf) for gf in list(Courseperformance.objects.filter(matric__exact=getMatric).values_list('amali', flat=True))]
-    getWeekFinal = [str(gf) for gf in list(Courseperformance.objects.filter(matric__exact=getMatric).values_list('quiz', flat=True))]
-    getProgram = userAcc.objects.filter(matric__exact=getMatric).values_list('program', flat=True)
-    getCourse= Courseperformance.objects.filter(matric__exact=getMatric)
-    getXaxis= [str(elem) for elem in list(Courseperformance.objects.filter(matric__exact=getMatric).values_list('cousecode', flat=True))]
-
-    getCourseButton = Courseperformance.objects.filter(matric__exact=getMatric).values_list('cousecode', flat=True)
-    getWeekFinal = [float(i) for i in  getWeekFinal]
-    getWeek7 = [float(i) for i in  getWeek7]
-    getWeek14 = [float(i) for i in  getWeek14]
-    getAmali = [float(i) for i in  getAmali]             
-    #----pure bokeh------------------------------
-    fruits = getXaxis
-    years = ["Test 1", "Test 2", "Amali","Quiz"]
-    colors = ["#c9d9d3", "#718dbf", "#ff8d67", "#56bacf"]
-
-    data = {'fruits' : fruits,
-            'Test 1'   : getWeek7,
-            'Test 2'   : getWeek14,
-            'Amali'   : getAmali,
-            'Quiz'   : getWeekFinal}
-
-    p = figure(x_range=fruits, plot_height=500, title="Overall",
-            toolbar_location=None, tools="hover", tooltips="$name @fruits: @$name")
-
-    p.vbar_stack(years, x='fruits', width=0.5, color=colors, source=data,
-                legend=[value(x) for x in years])
-
-    p.y_range.start = 0
-    p.y_range.end = 100
-    p.x_range.range_padding = 0.1
-    p.xgrid.grid_line_color = None
-    p.axis.minor_tick_line_color = None
-    p.outline_line_color = None
-    p.legend.location = "top_left"
-    p.legend.orientation = "horizontal"
-
-
-    for course in getCourseButton:
-        buttonInput= request.POST.get(course,False)
-        if buttonInput != False:
-            response = redirect('/accounts/course/')
-            request.session['nxtPg'] =  buttonInput
-            return response
-    
-   
-
-    script, div = components(p)
-    return render(request,'performance.html',{'script': script, 'div':div, 'postsSB': getCourse})
 
 def histo(field, subject, matric,rangee):
     getValue = subject
@@ -144,9 +71,9 @@ def subjectView(request):
     #----Overall------------------------------
     delays,delaysM =histo('totalcarrymark',getValue,getMatric,[0,60])
     plot = figure( plot_height = 600, plot_width = 600, 
-           title = 'Overall Performance of the class',
+           title = 'Overall Up-To-Date Performance',
           x_axis_label = 'Total Marks', 
-           y_axis_label = 'Students', background_fill_color="#fafafa")
+           y_axis_label = 'Number of Students', background_fill_color="#fafafa")
 
     plot.quad(bottom=delays['arr_delay'], top=0, 
        left=delays['left'], right=delays['right'],
@@ -168,7 +95,7 @@ def subjectView(request):
     getWeek14 = [str(g7) for g7 in list(Courseperformance.objects.filter(matric__exact=getMatric,cousecode=getValue).values_list('week14', flat=True))]
     getAmali = [str(gf) for gf in list(Courseperformance.objects.filter(matric__exact=getMatric,cousecode=getValue).values_list('amali', flat=True))]
     getQuiz = [str(gf) for gf in list(Courseperformance.objects.filter(matric__exact=getMatric,cousecode=getValue).values_list('quiz', flat=True))]
-    getTotal = [str(gf) for gf in list(Courseperformance.objects.filter(matric__exact=getMatric,cousecode=getValue).values_list('total', flat=True))]
+    getTotal = [str(gf) for gf in list(Courseperformance.objects.filter(matric__exact=getMatric,cousecode=getValue).values_list('predictedmarks', flat=True))]
     getWeek7 = [float(i) for i in  getWeek7]
     getWeek14 = [float(i) for i in  getWeek14]+getWeek7
     getWeek14 = [sum(getWeek14)]
@@ -182,7 +109,7 @@ def subjectView(request):
     print(realData)
 
 
-    predictGraph = figure(plot_height = 300,plot_width= 400, title='Carry Marks vs Predictions',x_range=test,y_range=(0,100), x_axis_label='Tests',
+    predictGraph = figure(plot_height = 300,plot_width= 400, title='Carry Marks(Cumulative) and Predictions',x_range=test,y_range=(0,100), x_axis_label='Tests',
                   y_axis_label='Marks')
     
     predictGraph.line(test, predictData, line_width=2, line_color='#f5a142', line_dash=[8,7],legend='Predicted')
@@ -195,7 +122,7 @@ def subjectView(request):
 
     plotTest1 = figure( plot_height = 300, plot_width = 400, 
            title = 'Performance of the class for Test 1',x_axis_label = 'Total Marks', 
-           y_axis_label = 'Students', background_fill_color="#fafafa")
+           y_axis_label = 'Number of Students', background_fill_color="#fafafa")
 
     plotTest1.quad(bottom=histT1['arr_delay'], top=0, 
        left=histT1['left'], right=histT1['right'],
@@ -215,7 +142,7 @@ def subjectView(request):
 
     plotTest2 = figure( plot_height = 300, plot_width = 400, 
            title = 'Performance of the class for Test 2',x_axis_label = 'Total Marks', 
-           y_axis_label = 'Students', background_fill_color="#fafafa")
+           y_axis_label = 'Number of Students', background_fill_color="#fafafa")
 
     plotTest2.quad(bottom=histT2['arr_delay'], top=0, 
        left=histT2['left'], right=histT2['right'],
@@ -235,7 +162,7 @@ def subjectView(request):
 
     plotAmali = figure( plot_height = 300, plot_width = 400, 
            title = 'Performance of the class for Amali',x_axis_label = 'Total Marks', 
-           y_axis_label = 'Students', background_fill_color="#fafafa")
+           y_axis_label = 'Number of Students', background_fill_color="#fafafa")
 
     plotAmali.quad(bottom=histT2['arr_delay'], top=0, 
        left=histT2['left'], right=histT2['right'],
@@ -255,7 +182,7 @@ def subjectView(request):
 
     plotQuiz = figure( plot_height = 300, plot_width = 400, 
            title = 'Performance of the class for Quiz',x_axis_label = 'Total Marks', 
-           y_axis_label = 'Students', background_fill_color="#fafafa")
+           y_axis_label = 'Number of Students', background_fill_color="#fafafa")
 
     plotQuiz.quad(bottom=histT2['arr_delay'], top=0, 
        left=histT2['left'], right=histT2['right'],
@@ -285,7 +212,8 @@ def subjectView(request):
 #-------------------------------------------------------------------------------------------------
 @login_required
 def dashboardView(request):
-    getMatric = request.user
+    getMatric = request.user.matric
+    getCourseButton = Courseperformance.objects.filter(matric__exact=getMatric).values_list('cousecode', flat=True)
     getDetails = Courseperformance.objects.filter(matric__exact=getMatric)
     getAssign = Assignment.objects.filter(matric__exact=getMatric,status=False)
     for assign in getAssign:
@@ -296,10 +224,18 @@ def dashboardView(request):
             if b>=0:
                 messages.warning(request,((" Due date for %s's assignment is %s days left" % (assign.courseid,b))))
             else:
-                 messages.error(request,(("You have passed the due date for %s's assignment" % (assign.courseid))))
+                messages.error(request,(("You have passed the due date for %s's assignment" % (assign.courseid))))
         else:
             messages.info(request,((" Due date for %s's assignment is %s days left" % (assign.courseid,b))))
-                 
+            
+    for course in getCourseButton:
+        buttonInput= request.POST.get(course,False)
+        if buttonInput != False:
+            response = redirect('/accounts/course/')
+            request.session['nxtPg'] =  buttonInput
+            return response
+
+   
 
 
     
@@ -308,7 +244,6 @@ def dashboardView(request):
     search_type2 = 'lte'
     filter1 = fieldname + '__' + search_type1
     filter2 = fieldname + '__' + search_type2
-    getMatric = request.user.matric
     getWeek7 = [str(elem) for elem in list(Courseperformance.objects.filter(matric__exact=getMatric).values_list('week7', flat=True))]
     getWeek14 = [str(g7) for g7 in list(Courseperformance.objects.filter(matric__exact=getMatric).values_list('week14', flat=True))]
     getAmali = [str(gf) for gf in list(Courseperformance.objects.filter(matric__exact=getMatric).values_list('amali', flat=True))]
@@ -317,8 +252,6 @@ def dashboardView(request):
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------
     getCourse= Courseperformance.objects.filter(matric__exact=getMatric)
     getXaxis= [str(elem) for elem in list(Courseperformance.objects.filter(matric__exact=getMatric).values_list('cousecode', flat=True))]
-
-    getCourseButton = Courseperformance.objects.filter(matric__exact=getMatric).values_list('cousecode', flat=True)
     getWeekFinal = [float(i) for i in  getWeekFinal]
     getWeek7 = [float(i) for i in  getWeek7]
     getWeek14 = [float(i) for i in  getWeek14]
@@ -334,7 +267,7 @@ def dashboardView(request):
             'Amali'   : getAmali,
             'Quiz'   : getWeekFinal}
 
-    p = figure(x_range=fruits, plot_height=500, title="Overall",
+    p = figure(x_range=fruits,  y_axis_label='Marks', x_axis_label='Courses',plot_height=500, title="Total Carry Marks",
             toolbar_location=None, tools="hover", tooltips="$name @fruits: @$name")
 
     p.vbar_stack(years, x='fruits', width=0.5, color=colors, source=data,
@@ -350,14 +283,7 @@ def dashboardView(request):
     p.legend.orientation = "horizontal"
 
 
-    for course in getCourseButton:
-        buttonInput= request.POST.get(course,False)
-        if buttonInput != False:
-            response = redirect('/accounts/course/')
-            request.session['nxtPg'] =  buttonInput
-            return response
-    
-   
+ 
     p.sizing_mode='scale_width'
     script, div = components(p)
     return render(request, 'dashboard.html',{'script': script, 'div':div, 'postsSB': getCourse})
