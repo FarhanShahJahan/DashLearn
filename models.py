@@ -20,7 +20,7 @@ class AccountsAccount(models.Model):
     matric = models.CharField(unique=True, max_length=10)
     cgpa = models.FloatField(blank=True, null=True)
     name = models.CharField(max_length=-1, blank=True, null=True)
-    cgpapercent = models.FloatField(blank=True, null=True)
+    cgpapercent = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -34,6 +34,7 @@ class Assignment(models.Model):
     feedback = models.CharField(max_length=-1, blank=True, null=True)
     duedate = models.DateField(db_column='dueDate', blank=True, null=True)  # Field name made lowercase.
     status = models.BooleanField(blank=True, null=True)
+    name = models.CharField(max_length=-1, blank=True, null=True)
 
     class Meta:
         managed = False

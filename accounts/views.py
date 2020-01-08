@@ -22,6 +22,7 @@ context ={}
 def indexView(request):
     return render(request, 'index.html')
 
+# Histogram Function
 def histo(field, subject, matric,rangee):
     getValue = subject
     fieldname =field
@@ -323,7 +324,7 @@ def assignmentView(request):
     getMatric = request.user.matric
     getCourse= Courseperformance.objects.filter(matric__exact=getMatric)
     getDetails = Courseperformance.objects.filter(matric__exact=getMatric)
-    getAssignment = Assignment.objects.filter(matric__exact=getMatric)
+    getAssignment = Assignment.objects.filter(matric__exact=getMatric,status=True)
     getCourseButton = Courseperformance.objects.filter(matric__exact=getMatric).values_list('cousecode', flat=True)
     
     for course in getCourseButton:

@@ -131,6 +131,7 @@ class Assignment(models.Model):
     feedback = models.CharField(max_length=100, blank=True, null=True)
     duedate = models.DateField(db_column='dueDate', blank=True, null=True)  # Field name made lowercase.
     status = models.BooleanField(blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = False
